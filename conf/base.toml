@@ -1,0 +1,15 @@
+#base config
+[base]
+    debug_mode="debug"
+    time_location="Asia/Chongqing"
+[log]
+    log_level="trace"  #日志打印的最低级别
+    [log.file.writer]  #日志写入配置
+        on = true
+        log_path="./golang.lib.inf.log"
+        rotate_log_path="./golang.lib.inf.log"
+        wf_log_path="./golang.wf.log"
+        rotate_wf_log_path="./golang.wf.log"
+    [log.console_writer] #工作台输出
+        on=true
+        color=true
