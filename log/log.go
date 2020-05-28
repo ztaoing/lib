@@ -30,7 +30,7 @@ var (
 )
 
 //记录
-type Recod struct {
+type Record struct {
 	time  string
 	code  string
 	info  string
@@ -38,13 +38,13 @@ type Recod struct {
 }
 
 //打印日志的格式： [日志级别][时间][代码] 信息
-func (r *Recod) String() string {
+func (r *Record) String() string {
 	return fmt.Sprintf("[%s][%s][%s] %s\n", LEVEL_FLAGS[r.level], r.time, r.code, r.info)
 }
 
 type Writer interface {
 	Init() error
-	Write(*Recod) error //写入日志
+	Write(*Record) error //写入日志
 }
 type Rotater interface {
 	Rotate() error
@@ -56,7 +56,7 @@ type Flusher interface {
 
 type Logger struct {
 	writers     []Writer
-	tunnel      chan *Recod
+	tunnel      chan *Record
 	level       int
 	lastTime    int64
 	lastTimeStr string //时间字符串
@@ -75,13 +75,13 @@ func NewLoger() *Logger {
 	//初始化参数
 	l := new(Logger)
 	l.writers = []Writer{}
-	l.tunnel = make(chan *Recod, tunnel_size_default)
+	l.tunnel = make(chan *Record, tunnel_size_default)
 	l.c = make(chan bool, 2)
 	l.level = DEBUG
 	l.layout = "2006/01/02 15:04:05" //定义时间格式
 	l.recordPool = &sync.Pool{
 		New: func() interface{} {
-			return &Recod{}
+			return &Record{}
 		}}
 	go bootstrapLogWriter(l)
 	return l
@@ -170,7 +170,7 @@ func (l *Logger) deliverRecordToWriter(level int, format string, args ...interfa
 		l.lastTimeStr = now.Format(l.layout)
 	}
 	//从record中获取任意一个
-	r := l.recordPool.Get().(*Recod)
+	r := l.recordPool.Get().(*Record)
 	r.info = inf
 	r.code = code
 	r.time = l.lastTimeStr
@@ -184,7 +184,7 @@ func bootstrapLogWriter(logger *Logger) {
 		panic("logger is nil")
 	}
 	var (
-		r  *Recod
+		r  *Record
 		ok bool
 	)
 	if r, ok = <-logger.tunnel; !ok {
@@ -228,6 +228,7 @@ func bootstrapLogWriter(logger *Logger) {
 		case <-rotateTimer.C:
 			for _, w := range logger.writers {
 				if r, ok := w.(Rotater); ok {
+					//rotate 对文件重命名
 					if err := r.Rotate(); err != nil {
 						log.Println(err)
 					}
