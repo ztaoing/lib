@@ -2,7 +2,7 @@ package log
 
 import (
 	"fmt"
-	"github.com/siddontang/go-log/log"
+	"log"
 	"path"
 	"runtime"
 	"strconv"
@@ -83,7 +83,9 @@ func NewLoger() *Logger {
 		New: func() interface{} {
 			return &Record{}
 		}}
+
 	go bootstrapLogWriter(l)
+
 	return l
 
 }
@@ -180,7 +182,7 @@ func (l *Logger) deliverRecordToWriter(level int, format string, args ...interfa
 
 }
 func bootstrapLogWriter(logger *Logger) {
-	if logger != nil {
+	if logger == nil {
 		panic("logger is nil")
 	}
 	var (

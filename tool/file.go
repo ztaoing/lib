@@ -18,7 +18,7 @@ var ConfEnv string     //配置文件名
 //如：config = conf/dev/base.json  ConfEnvPath=conf/dev   ConfEnv=dev
 //如：config = conf/base.json      ConfEnvPath=conf       ConfEnv=conf
 
-func ParseConPath(config string) error {
+func ParseConfPath(config string) error {
 	path := strings.Split(config, "/")
 	length := len(path)
 	prefix := strings.Join(path[:length-1], "/")
