@@ -373,3 +373,10 @@ func calcTraceId(ip string) (traceId string) {
 	b.WriteString("b0") //末尾两位标记来源 b0为go
 	return b.String()
 }
+
+func NewTrace() *TraceContext {
+	trace := &TraceContext{}
+	trace.TraceId = GetTraceId()
+	trace.SpanId = NewSpanId()
+	return trace
+}

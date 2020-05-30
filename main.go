@@ -2,14 +2,19 @@ package main
 
 import (
 	"fmt"
-	"reflect"
-	"unsafe"
+	"lib/log"
+	"lib/tool"
+	"time"
 )
 
 func main() {
-	str := "abc"
-	fmt.Printf("%08x", stringAddr(str))
-}
-func stringAddr(s string) uintptr {
-	return (*reflect.StringHeader)(unsafe.Pointer(&s)).Data
+	if err := tool.InitModule("./conf/dev/", []string{"base", "mysql", "redis"}); err != nil {
+		log.Fatal(fmt.Sprintf("%s", err))
+	}
+	defer tool.Destroy()
+
+	tool.Log.TagInfo(tool.NewTrace(), tool.DLTagUndefind, map[string]interface{}{
+		"message": "todo something",
+	})
+	time.Sleep(time.Second)
 }

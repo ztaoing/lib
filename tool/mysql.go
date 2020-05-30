@@ -22,7 +22,7 @@ func InitDBPool(path string) error {
 		return err
 	}
 	if len(DbConfMap.List) == 0 {
-		fmt.Printf("[INFO]%s%s\n", time.Now().Format(TimeFomat), "  mysql config is empty")
+		fmt.Printf("[INFO]%s%s\n", time.Now().Format(TimeFormat), "  mysql config is empty")
 	}
 	DBMapPool = map[string]*sql.DB{}
 	GORMMapPool = map[string]*gorm.DB{}
@@ -222,7 +222,7 @@ func (logger *MysqlGormLogger) Print(values ...interface{}) {
 //logCtx(true)会执行该方法
 func (logger *MysqlGormLogger) CtxPrint(s *gorm.DB, values ...interface{}) {
 	ctx, ok := s.GetCtx()
-	trace := newTrace()
+	trace := NewTrace()
 	if ok {
 		trace = ctx.(*TraceContext)
 	}
